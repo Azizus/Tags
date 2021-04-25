@@ -1,7 +1,9 @@
 package com.airship.tags.domain;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,9 +17,7 @@ public class TagEntity {
 
 	private Long userId;
 
-	private List<String> add;
-
-	private List<String> remove;
+	private Set<String> tags;
 	
-	private Date date;
+	private LocalDateTime date;
 }

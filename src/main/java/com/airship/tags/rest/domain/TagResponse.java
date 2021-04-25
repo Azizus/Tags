@@ -1,7 +1,6 @@
 package com.airship.tags.rest.domain;
 
-import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +12,5 @@ import lombok.NoArgsConstructor;
 public class TagResponse {
 
 	private Long userId;
-	private List<String> add;
-	private List<String> remove;
-	private Date date;
+	private Set<String> tags;
 }
