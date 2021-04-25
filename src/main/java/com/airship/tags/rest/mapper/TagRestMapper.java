@@ -2,12 +2,14 @@ package com.airship.tags.rest.mapper;
 
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 import com.airship.tags.domain.TagEntity;
 import com.airship.tags.rest.domain.TagRequest;
 import com.airship.tags.rest.domain.TagResponse;
 
 
-
+@Component
 public class TagRestMapper {
 	
 	
