@@ -1,5 +1,0 @@
-server: 
-  port: 1917
-  servlet:
-      contextpath: /api
-
