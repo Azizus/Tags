@@ -2,6 +2,7 @@ package com.airship.tags.rest.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -18,8 +19,8 @@ public class TagRequest {
 
 	@NotNull
 	private Long userId;
-	private List<String> add;
-	private List<String> remove;
+	private Set<String> add;
+	private Set<String> remove;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime date;
 }
