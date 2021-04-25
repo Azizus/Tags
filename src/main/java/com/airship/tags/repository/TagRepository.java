@@ -1,9 +1,18 @@
 package com.airship.tags.repository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+
+import org.springframework.stereotype.Repository;
 
 import com.airship.tags.domain.TagEntity;
 
-public interface TagRepository extends MongoRepository<TagEntity, Long>{
+@Repository
+public class TagRepository {
+	
+	public TagEntity save(TagEntity tagEntity) {
+		
+		DataStore.tags.add(tagEntity);
+		
+		return tagEntity;
+	}
 
 }
