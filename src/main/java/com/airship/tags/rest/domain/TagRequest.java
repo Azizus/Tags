@@ -1,7 +1,6 @@
 package com.airship.tags.rest.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;

@@ -31,17 +31,33 @@ public class TagServiceImpl implements TagService {
 	public TagResponse pushTag(TagRequest tagRequest) {
 
 		TagEntity tagEntity = this.findTagEntitybyUserId(tagRequest.getUserId());
-		if (tagEntity != null) {
+		
+		if (tagEntity.getUserId() != null) {
 			if (tagEntity.getTags() == null)
-				tagEntity.setTags(new HashSet<>());
-
-			tagEntity.getTags().addAll(tagRequest.getAdd());
-			tagEntity.getTags().removeAll(tagRequest.getRemove());
+				tagRequest = this.cleanAddAndRemoveTags(tagRequest);
+				tagEntity = this.tagListInit(tagEntity, tagRequest);
 			return tagRequestMapper.TagEntityToTagResponse(tagRepository.save(tagEntity));
 
 		} else {
+			tagRequest = this.cleanAddAndRemoveTags(tagRequest);
+			tagEntity = tagRequestMapper.TagRequestToTagEntity(tagRequest);
 			return tagRequestMapper.TagEntityToTagResponse(tagRepository.save(tagEntity));
 		}
 	}
+	
+	  private TagEntity tagListInit(TagEntity tagEntity, TagRequest tagRequest) {
+		tagEntity.setTags(new HashSet<>());
+		tagEntity.getTags().addAll(tagRequest.getAdd());
+		tagEntity.getTags().removeAll(tagRequest.getRemove());
+		return tagEntity;	
+	}
+	  
+	  private TagRequest cleanAddAndRemoveTags(TagRequest tagRequest) {
+		  HashSet<String> intermerdiate = new HashSet<>(tagRequest.getRemove());
+		  intermerdiate.retainAll(tagRequest.getAdd());
+		  tagRequest.getRemove().removeAll(intermerdiate);
+		  tagRequest.getAdd().removeAll(intermerdiate);
+		  return tagRequest;
+	  }
 
 }
