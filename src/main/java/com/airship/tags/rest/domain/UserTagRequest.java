@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 public class UserTagRequest {
 
 	@NotNull
-	private Long userId;
+	private String user;
 	private Set<String> add;
 	private Set<String> remove;
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime date;
+	private LocalDateTime timestamp;
 }

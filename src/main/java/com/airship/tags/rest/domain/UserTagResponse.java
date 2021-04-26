@@ -2,6 +2,8 @@ package com.airship.tags.rest.domain;
 
 import java.util.Set;
 
+import com.airship.tags.domain.nonpersistant.Tag;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class UserTagResponse {
 
-	private Long userId;
-	private Set<String> tags;
+	private String userId;
+	private Set<Tag> tags;
 }

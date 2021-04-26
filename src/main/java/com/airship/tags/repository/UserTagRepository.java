@@ -16,7 +16,7 @@ public class UserTagRepository {
 		return tagEntity;
 	}
 
-	public UserTagEntity findTagEntityByUserId(Long userId) {
+	public UserTagEntity findTagEntityByUserId(String userId) {
 		
 		UserTagEntity emptyTagEntity = new UserTagEntity();
 		

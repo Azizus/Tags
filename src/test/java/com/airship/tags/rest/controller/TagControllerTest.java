@@ -25,7 +25,7 @@ public class TagControllerTest {
 
 		Set<String> add = new HashSet<>();
 		Set<String> remove = new HashSet<>();
-		UserTagRequest tagRequest = new UserTagRequest(1L, add, remove, LocalDateTime.now());
+		UserTagRequest tagRequest = new UserTagRequest("1", add, remove, LocalDateTime.now());
 
 		assertNotNull(testRestTemplate.postForObject("http://localhost:1917/api/tags", tagRequest, UserTagRequest.class));
 	}

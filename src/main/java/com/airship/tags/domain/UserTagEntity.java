@@ -1,21 +1,19 @@
 package com.airship.tags.domain;
 
-import java.time.LocalDateTime;
 import java.util.Set;
+
+import com.airship.tags.domain.nonpersistant.Tag;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class UserTagEntity {
 
-	private Long userId;
+	private String userId;
 
-	private Set<TagEntity> tags;
-	
-	private LocalDateTime date;
+	private Set<Tag> tags;
 }

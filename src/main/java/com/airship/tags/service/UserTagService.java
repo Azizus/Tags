@@ -11,6 +11,6 @@ public interface UserTagService {
 
 	public UserTagResponse pushTag(UserTagRequest tagRequest);
 	
-	public UserTagEntity findTagEntitybyUserId(Long userId);
+	public UserTagEntity findTagEntitybyUserId(String userId);
 		
 }
