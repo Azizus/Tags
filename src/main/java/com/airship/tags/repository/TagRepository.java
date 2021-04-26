@@ -3,26 +3,26 @@ package com.airship.tags.repository;
 
 import org.springframework.stereotype.Repository;
 
-import com.airship.tags.domain.TagEntity;
+import com.airship.tags.domain.UserTagEntity;
 
 
 @Repository
 public class TagRepository {
 	
-	public TagEntity save(TagEntity tagEntity) {
+	public UserTagEntity save(UserTagEntity tagEntity) {
 		
 		DataStore.tags.add(tagEntity);
 		
 		return tagEntity;
 	}
 
-	public TagEntity findTagEntityByUserId(Long userId) {
+	public UserTagEntity findTagEntityByUserId(Long userId) {
 		
-		TagEntity emptyTagEntity = new TagEntity();
+		UserTagEntity emptyTagEntity = new UserTagEntity();
 		
-		for (TagEntity tagEntity: DataStore.tags) {
-		if (tagEntity.getUserId().equals(userId))
-			return tagEntity;
+		for (UserTagEntity tagEntity: DataStore.tags) {
+			if (tagEntity.getUserId().equals(userId))
+				return tagEntity;
 		}
 		return emptyTagEntity;
 	}
