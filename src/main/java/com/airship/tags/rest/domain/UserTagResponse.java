@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TagResponse {
+public class UserTagResponse {
 
 	private Long userId;
 	private Set<String> tags;

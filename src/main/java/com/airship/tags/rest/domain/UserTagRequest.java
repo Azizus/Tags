@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TagRequest {
+public class UserTagRequest {
 
 	@NotNull
 	private Long userId;

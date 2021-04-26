@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 
-import com.airship.tags.rest.domain.TagRequest;
+import com.airship.tags.rest.domain.UserTagRequest;
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 public class TagControllerTest {
@@ -25,9 +25,9 @@ public class TagControllerTest {
 
 		Set<String> add = new HashSet<>();
 		Set<String> remove = new HashSet<>();
-		TagRequest tagRequest = new TagRequest(1L, add, remove, LocalDateTime.now());
+		UserTagRequest tagRequest = new UserTagRequest(1L, add, remove, LocalDateTime.now());
 
-		assertNotNull(testRestTemplate.postForObject("http://localhost:1917/api/tags", tagRequest, TagRequest.class));
+		assertNotNull(testRestTemplate.postForObject("http://localhost:1917/api/tags", tagRequest, UserTagRequest.class));
 	}
 
 }

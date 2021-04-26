@@ -7,7 +7,7 @@ import com.airship.tags.domain.UserTagEntity;
 
 
 @Repository
-public class TagRepository {
+public class UserTagRepository {
 	
 	public UserTagEntity save(UserTagEntity tagEntity) {
 		

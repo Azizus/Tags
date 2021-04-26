@@ -5,17 +5,17 @@ import java.util.HashSet;
 import org.springframework.stereotype.Component;
 
 import com.airship.tags.domain.UserTagEntity;
-import com.airship.tags.rest.domain.TagRequest;
-import com.airship.tags.rest.domain.TagResponse;
+import com.airship.tags.rest.domain.UserTagRequest;
+import com.airship.tags.rest.domain.UserTagResponse;
 
 @Component
-public class TagRestMapper {
+public class UserTagRestMapper {
 
-	public TagResponse TagEntityToTagResponse(UserTagEntity tagEntity) {
-		return new TagResponse(tagEntity.getUserId(), tagEntity.getTags());
+	public UserTagResponse TagEntityToTagResponse(UserTagEntity tagEntity) {
+		return new UserTagResponse(tagEntity.getUserId(), tagEntity.getTags());
 	}
 
-	public UserTagEntity TagRequestToTagEntity(TagRequest tagRequest) {
+	public UserTagEntity TagRequestToTagEntity(UserTagRequest tagRequest) {
 		UserTagEntity tagEntity = new UserTagEntity();
 		
 		tagEntity.setUserId(tagRequest.getUserId());

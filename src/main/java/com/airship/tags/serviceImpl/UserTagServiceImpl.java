@@ -6,20 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.airship.tags.domain.UserTagEntity;
-import com.airship.tags.repository.TagRepository;
-import com.airship.tags.rest.domain.TagRequest;
-import com.airship.tags.rest.domain.TagResponse;
-import com.airship.tags.rest.mapper.TagRestMapper;
-import com.airship.tags.service.TagService;
+import com.airship.tags.repository.UserTagRepository;
+import com.airship.tags.rest.domain.UserTagRequest;
+import com.airship.tags.rest.domain.UserTagResponse;
+import com.airship.tags.rest.mapper.UserTagRestMapper;
+import com.airship.tags.service.UserTagService;
 
 @Service
-public class TagServiceImpl implements TagService {
+public class UserTagServiceImpl implements UserTagService {
 
 	@Autowired
-	private TagRepository tagRepository;
+	private UserTagRepository tagRepository;
 
 	@Autowired
-	private TagRestMapper tagRequestMapper;
+	private UserTagRestMapper tagRequestMapper;
 
 	@Override
 	public UserTagEntity findTagEntitybyUserId(Long userId) {
@@ -28,14 +28,16 @@ public class TagServiceImpl implements TagService {
 	}
 
 	@Override
-	public TagResponse pushTag(TagRequest tagRequest) {
+	public UserTagResponse pushTag(UserTagRequest tagRequest) {
 
 		UserTagEntity tagEntity = this.findTagEntitybyUserId(tagRequest.getUserId());
 
 		if (tagEntity.getUserId() != null) {
 			if (tagEntity.getTags() == null) {
 				tagRequest = this.cleanAddAndRemoveTags(tagRequest);
-				tagEntity = this.tagListInit(tagEntity, tagRequest);
+//				tagEntity = this.tagListInit(tagEntity, tagRequest);
+				tagEntity.setTags(new HashSet<>());
+
 			}
 
 			return tagRequestMapper.TagEntityToTagResponse(tagRepository.save(tagEntity));
@@ -47,14 +49,14 @@ public class TagServiceImpl implements TagService {
 		}
 	}
 
-	private UserTagEntity tagListInit(UserTagEntity tagEntity, TagRequest tagRequest) {
+	private UserTagEntity tagListInit(UserTagEntity tagEntity, UserTagRequest tagRequest) {
 		tagEntity.setTags(new HashSet<>());
 		tagEntity.getTags().addAll(tagRequest.getAdd());
 		tagEntity.getTags().removeAll(tagRequest.getRemove());
 		return tagEntity;
 	}
 
-	private TagRequest cleanAddAndRemoveTags(TagRequest tagRequest) {
+	private UserTagRequest cleanAddAndRemoveTags(UserTagRequest tagRequest) {
 		HashSet<String> intermerdiate = new HashSet<>(tagRequest.getRemove());
 		intermerdiate.retainAll(tagRequest.getAdd());
 		tagRequest.getRemove().removeAll(intermerdiate);

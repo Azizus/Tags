@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.airship.tags.rest.domain.TagRequest;
-import com.airship.tags.rest.domain.TagResponse;
-import com.airship.tags.service.TagService;
+import com.airship.tags.rest.domain.UserTagRequest;
+import com.airship.tags.rest.domain.UserTagResponse;
+import com.airship.tags.service.UserTagService;
 
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -19,11 +19,11 @@ import io.swagger.v3.oas.annotations.Operation;
 public class TagController {
 
 	@Autowired
-	private TagService tagService;
+	private UserTagService tagService;
 	
 	@PostMapping(consumes = "application/json", produces = "application/json")
     @Operation(method = "POST", summary = "Push Tag", description = "Push tag with specific informations")
-	public TagResponse push(@Valid @RequestBody TagRequest tagRequest) {
+	public UserTagResponse push(@Valid @RequestBody UserTagRequest tagRequest) {
 		
 		return tagService.pushTag(tagRequest);
 	}
