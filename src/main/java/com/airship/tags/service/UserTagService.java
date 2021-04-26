@@ -9,4 +9,4 @@ import com.airship.tags.rest.domain.UserTagResponse;
 public interface UserTagService {
 
 	public UserTagResponse pushTag(UserTagRequest tagRequest);
-		}
+}

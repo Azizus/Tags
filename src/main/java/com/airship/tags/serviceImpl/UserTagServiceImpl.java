@@ -1,13 +1,12 @@
 package com.airship.tags.serviceImpl;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.airship.tags.domain.UserTagEntity;
@@ -17,53 +16,44 @@ import com.airship.tags.rest.domain.UserTagResponse;
 import com.airship.tags.rest.mapper.UserTagRestMapper;
 import com.airship.tags.service.UserTagService;
 import com.airship.tags.utils.ActionEnum;
-import com.airship.tags.utils.CleanDuplication;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class UserTagServiceImpl implements UserTagService {
 
-	@Autowired
-	private UserTagRepository userTagRepository;
 
-	@Autowired
-	private UserTagRestMapper userTagRestMapper;
+	private final UserTagRepository userTagRepository;
+
+	
+	private final UserTagRestMapper userTagRestMapper;
 
 	@Override
 	public UserTagResponse pushTag(UserTagRequest userTagRequest) {
-
-		userTagRequest = this.cleanAddAndRemoveTags(userTagRequest);
-
-		for (String tagToAdd : userTagRequest.getAdd()) {
-			UserTagEntity userTagEntity = new UserTagEntity();
- 			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity
-					(userTagRequest.getUser(), userTagRequest.getTimestamp(), tagToAdd, ActionEnum.ADD);
-			userTagRepository.save(userTagEntity);
+		
+		if (userTagRequest.getAdd() != null && userTagRequest.getRemove() != null) {
+			userTagRequest.getAdd().removeIf(tag -> userTagRequest.getRemove().contains(tag));
 		}
 
-		for (String tagToRemove : userTagRequest.getRemove()) {
-			UserTagEntity userTagEntity = new UserTagEntity();
-			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity
-					(userTagRequest.getUser(), userTagRequest.getTimestamp(), tagToRemove,
-					ActionEnum.REMOVE);
-			userTagRepository.save(userTagEntity);
-		}
+		mapTagFromRequestToEntity(userTagRequest.getUser(), userTagRequest.getTimestamp(), userTagRequest.getAdd(), ActionEnum.ADD)
+			.forEach(userTagRepository::save);
 
+		mapTagFromRequestToEntity(userTagRequest.getUser(), userTagRequest.getTimestamp(), userTagRequest.getRemove(), ActionEnum.REMOVE)
+			.forEach(userTagRepository::save);
+		
 		return this.findMostRecentUserTags(userTagRequest.getUser());
 	}
-
-	private UserTagRequest cleanAddAndRemoveTags(UserTagRequest userTagRequest) {
-
-		Map<String, Set<String>> cleaned = new HashMap<>();
-
-		cleaned = CleanDuplication.cleanSetsDuplication(userTagRequest.getAdd(), userTagRequest.getRemove());
-
-		userTagRequest.setAdd(cleaned.get("add"));
-		userTagRequest.setRemove(cleaned.get("remove"));
-
-		return userTagRequest;
+	
+	private Stream<UserTagEntity> mapTagFromRequestToEntity(String user, LocalDateTime timestamp, Set<String> tags, ActionEnum action) {
+		if (tags == null)
+			return Stream.empty();
+		return tags.stream()
+		.map(tag -> userTagRestMapper.UserTagRequestToUserTagEntity(user, timestamp, tag, action));
 	}
 
-	public Set<UserTagEntity> findAllUserTagEntitiesByUserId(String userId) {
+
+	private Set<UserTagEntity> findAllUserTagEntitiesByUserId(String userId) {
 		return userTagRepository.getByUserId(userId);
 	}
 

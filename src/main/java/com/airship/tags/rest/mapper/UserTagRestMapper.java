@@ -5,9 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 import com.airship.tags.domain.UserTagEntity;
-import com.airship.tags.rest.domain.UserTagRequest;
 import com.airship.tags.utils.ActionEnum;
-import com.airship.tags.utils.DateUtils;
 
 @Component
 public class UserTagRestMapper {

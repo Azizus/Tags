@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.airship.tags.rest.domain.UserTagRequest;
 import com.airship.tags.rest.domain.UserTagResponse;
+import com.airship.tags.utils.ActionEnum;
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 public class TagControllerTest {
@@ -27,30 +28,86 @@ public class TagControllerTest {
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
+/*
+ * test out of order
+ */
 	@Test
-	public void request_response_should_not_be_null_when_posting_a_user_tag() throws Exception {
+	public void test_out_of_order_removal_between_two_adds() throws Exception {
 
-		Set<String> add = Stream.of("beyhive_member")
-				  .collect(Collectors.toCollection(HashSet::new));
-		Set<String> remove = new HashSet<>();
-		UserTagRequest tagRequest = new UserTagRequest("1", add, remove, LocalDateTime.now());
+		UserTagRequest request = buildRequest("a", LocalDateTime.now(), ActionEnum.ADD);
+		UserTagResponse expected = new UserTagResponse("1", Stream.of("a")
+				  .collect(Collectors.toCollection(HashSet::new)));
 
-		assertNotNull(testRestTemplate.postForObject("http://localhost:1917/api/tags", tagRequest, UserTagRequest.class));
+		ResponseEntity<UserTagResponse> response = testRestTemplate.
+				postForEntity("http://localhost:1917/api/tags", request, UserTagResponse.class);
+		
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getBody(), equalTo(expected));
+		
+	
+		// second push
+		UserTagRequest request2 = buildRequest("a", LocalDateTime.now().minusHours(1), ActionEnum.ADD);
+		UserTagResponse expected2 = new UserTagResponse("1", Stream.of("a")
+				  .collect(Collectors.toCollection(HashSet::new)));
+
+		ResponseEntity<UserTagResponse> response2 = testRestTemplate.
+				postForEntity("http://localhost:1917/api/tags", request2, UserTagResponse.class);
+		
+		assertThat(response2.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response2.getBody(), equalTo(expected2));
+		
+	
+		// third push
+		UserTagRequest request3 = buildRequest("a", LocalDateTime.now().minusMinutes(30), ActionEnum.REMOVE);
+		UserTagResponse expected3 = new UserTagResponse("1", Stream.of("a")
+				  .collect(Collectors.toCollection(HashSet::new)));
+
+		ResponseEntity<UserTagResponse> response3 = testRestTemplate.
+				postForEntity("http://localhost:1917/api/tags", request3, UserTagResponse.class);
+		
+		assertThat(response3.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response3.getBody(), equalTo(expected3));
+	}
+	
+	
+/*
+ * Latent add received after remove:
+ */
+	
+	@Test
+	public void test_latent_add_received_after_remove() throws Exception{
+		
+		UserTagRequest request = buildRequest("a", LocalDateTime.now(), ActionEnum.REMOVE);
+		UserTagResponse expected = new UserTagResponse("1", new HashSet<String>());
+
+		ResponseEntity<UserTagResponse> response = testRestTemplate.
+				postForEntity("http://localhost:1917/api/tags", request, UserTagResponse.class);
+		
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getBody(), equalTo(expected));
+		
+	
+		// second push
+		UserTagRequest request2 = buildRequest("a", LocalDateTime.now().minusHours(1), ActionEnum.ADD);
+		UserTagResponse expected2 = new UserTagResponse("1", new HashSet<String>());
+
+		ResponseEntity<UserTagResponse> response2 = testRestTemplate.
+				postForEntity("http://localhost:1917/api/tags", request2, UserTagResponse.class);
+		
+		assertThat(response2.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response2.getBody(), equalTo(expected2));
 	}
 
-	@Test
-	public void request_response_should_return_userId_as_2_and_tags_as_beyhive_member_when_posting_a_user_tag() throws Exception {
 
-		Set<String> add = Stream.of("beyhive_member")
-				  .collect(Collectors.toCollection(HashSet::new));
-		Set<String> remove = new HashSet<>();
-		UserTagRequest tagRequest = new UserTagRequest("2", add, remove, LocalDateTime.now());
-
-		ResponseEntity<String> response = testRestTemplate.
-				postForEntity("http://localhost:1917/api/tags", tagRequest, String.class);
-				 
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-
-		
+	private UserTagRequest buildRequest(String tag, LocalDateTime timestamp, ActionEnum type) {
+		Set<String> tags = Stream.of(tag)
+		  .collect(Collectors.toCollection(HashSet::new));
+		switch (type) {
+			case ADD:
+				return new UserTagRequest("1", tags, null, timestamp);
+			case REMOVE:
+				return new UserTagRequest("1", null, tags, timestamp);
+		}
+		return null;
 	}
 }
