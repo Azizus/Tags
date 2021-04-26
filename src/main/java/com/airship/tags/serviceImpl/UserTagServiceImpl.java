@@ -1,9 +1,6 @@
 package com.airship.tags.serviceImpl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.airship.tags.domain.UserTagEntity;
-import com.airship.tags.domain.data.Tag;
 import com.airship.tags.repository.UserTagRepository;
 import com.airship.tags.rest.domain.UserTagRequest;
 import com.airship.tags.rest.domain.UserTagResponse;
 import com.airship.tags.rest.mapper.UserTagRestMapper;
 import com.airship.tags.service.UserTagService;
+import com.airship.tags.utils.ActionEnum;
 import com.airship.tags.utils.CleanDuplication;
 
 @Service
@@ -32,41 +29,23 @@ public class UserTagServiceImpl implements UserTagService {
 	private CleanDuplication cleanDuplication;
 
 	@Override
-	public UserTagEntity findTagEntitybyUserId(String userId) {
-
-		return userTagRepository.findTagEntityByUserId(userId);
-	}
-
-	@Override
 	public UserTagResponse pushTag(UserTagRequest userTagRequest) {
-
-		UserTagEntity userTagEntity = this.findTagEntitybyUserId(userTagRequest.getUser());
 
 		userTagRequest = this.cleanAddAndRemoveTags(userTagRequest);
 
-		if (userTagEntity.getUserId() != null) {
-
-			Set<Tag> tags = new HashSet<>();
-			// creating add actions from add list
-			tags.addAll(userTagRestMapper.createAddListOfTagFromUserTagRequest(userTagRequest));
-
-			// creating remove actions from remove list
-			tags.addAll(userTagRestMapper.createRemoveListOfTagFromUserTagRequest(userTagRequest));
-
-			if (userTagEntity.getTags() == null)
-				userTagEntity.setTags(tags);
-			else {
-				Set<Tag> combinedTags = new HashSet<>();
-				combinedTags.addAll(userTagEntity.getTags());
-				combinedTags.addAll(tags);
-				userTagEntity.setTags(combinedTags);
-			}
-			return userTagRestMapper.UserTagEntityToUserTagResponse(userTagRepository.save(userTagEntity));
-
-		} else {
-			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity(userTagRequest);
-			return userTagRestMapper.UserTagEntityToUserTagResponse(userTagRepository.save(userTagEntity));
+		for (String add : userTagRequest.getAdd()) {
+			UserTagEntity userTagEntity = new UserTagEntity();
+			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity(userTagRequest, add, ActionEnum.ADD);
+			userTagRepository.save(userTagEntity);
 		}
+
+		for (String remove : userTagRequest.getRemove()) {
+			UserTagEntity userTagEntity = new UserTagEntity();
+			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity(userTagRequest, remove, ActionEnum.REMOVE);
+			userTagRepository.save(userTagEntity);
+		}
+
+		return this.findAllUserTags(userTagRequest.getUser());
 	}
 
 	private UserTagRequest cleanAddAndRemoveTags(UserTagRequest userTagRequest) {
@@ -79,6 +58,11 @@ public class UserTagServiceImpl implements UserTagService {
 		userTagRequest.setRemove(cleaned.get("remove"));
 
 		return userTagRequest;
+	}
+
+	@Override
+	public UserTagResponse findAllUserTags(String userId) {
+		return new UserTagResponse();
 	}
 
 }

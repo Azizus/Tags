@@ -15,16 +15,5 @@ public class UserTagRepository {
 		
 		return tagEntity;
 	}
-
-	public UserTagEntity findTagEntityByUserId(String userId) {
-		
-		UserTagEntity emptyTagEntity = new UserTagEntity();
-		
-		for (UserTagEntity tagEntity: DataStore.tags) {
-			if (tagEntity.getUserId().equals(userId))
-				return tagEntity;
-		}
-		return emptyTagEntity;
-	}
 	
 }

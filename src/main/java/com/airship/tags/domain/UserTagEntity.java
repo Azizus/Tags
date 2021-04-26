@@ -1,8 +1,8 @@
 package com.airship.tags.domain;
 
-import java.util.Set;
+import java.time.LocalDateTime;
 
-import com.airship.tags.domain.data.Tag;
+import com.airship.tags.utils.ActionEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,5 +15,9 @@ public class UserTagEntity {
 
 	private String userId;
 
-	private Set<Tag> tags;
+	private String tag;
+	
+	private ActionEnum action;
+	
+	private LocalDateTime timestamp;
 }
