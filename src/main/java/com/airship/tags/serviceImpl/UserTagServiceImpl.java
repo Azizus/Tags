@@ -28,9 +28,6 @@ public class UserTagServiceImpl implements UserTagService {
 	@Autowired
 	private UserTagRestMapper userTagRestMapper;
 
-	@Autowired
-	private CleanDuplication cleanDuplication;
-
 	@Override
 	public UserTagResponse pushTag(UserTagRequest userTagRequest) {
 
@@ -38,14 +35,15 @@ public class UserTagServiceImpl implements UserTagService {
 
 		for (String tagToAdd : userTagRequest.getAdd()) {
 			UserTagEntity userTagEntity = new UserTagEntity();
-			// pass only userid and timestamp
-			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity(userTagRequest, tagToAdd, ActionEnum.ADD);
+ 			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity
+					(userTagRequest.getUser(), userTagRequest.getTimestamp(), tagToAdd, ActionEnum.ADD);
 			userTagRepository.save(userTagEntity);
 		}
 
 		for (String tagToRemove : userTagRequest.getRemove()) {
 			UserTagEntity userTagEntity = new UserTagEntity();
-			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity(userTagRequest, tagToRemove,
+			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity
+					(userTagRequest.getUser(), userTagRequest.getTimestamp(), tagToRemove,
 					ActionEnum.REMOVE);
 			userTagRepository.save(userTagEntity);
 		}
@@ -57,7 +55,7 @@ public class UserTagServiceImpl implements UserTagService {
 
 		Map<String, Set<String>> cleaned = new HashMap<>();
 
-		cleaned = cleanDuplication.cleanSetsDuplication(userTagRequest.getAdd(), userTagRequest.getRemove());
+		cleaned = CleanDuplication.cleanSetsDuplication(userTagRequest.getAdd(), userTagRequest.getRemove());
 
 		userTagRequest.setAdd(cleaned.get("add"));
 		userTagRequest.setRemove(cleaned.get("remove"));
@@ -65,7 +63,6 @@ public class UserTagServiceImpl implements UserTagService {
 		return userTagRequest;
 	}
 
-	@Override
 	public Set<UserTagEntity> findAllUserTagEntitiesByUserId(String userId) {
 		return userTagRepository.getByUserId(userId);
 	}

@@ -5,12 +5,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.stereotype.Component;
 
-@Component
 public class CleanDuplication {
 	
-	public Map<String, Set<String>> cleanSetsDuplication (Set<String> add, Set<String> remove){
+	public static Map<String, Set<String>> cleanSetsDuplication (Set<String> add, Set<String> remove){
 		
 		HashSet<String> intermerdiate = new HashSet<String>(remove);
 		intermerdiate.retainAll(add);

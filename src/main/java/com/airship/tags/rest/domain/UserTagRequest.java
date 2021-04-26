@@ -1,5 +1,6 @@
 package com.airship.tags.rest.domain;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -21,5 +22,5 @@ public class UserTagRequest {
 	private Set<String> remove;
 	@NotNull
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private String timestamp;
+	private LocalDateTime timestamp;
 }
