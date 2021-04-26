@@ -28,13 +28,15 @@ public class TagControllerTest {
 	@Autowired
 	private TestRestTemplate testRestTemplate;
 
+	
+		
 /*
  * test out of order
  */
 	@Test
 	public void test_out_of_order_removal_between_two_adds() throws Exception {
 
-		UserTagRequest request = buildRequest("a", LocalDateTime.now(), ActionEnum.ADD);
+		UserTagRequest request = buildRequest("1", "a", LocalDateTime.now(), ActionEnum.ADD);
 		UserTagResponse expected = new UserTagResponse("1", Stream.of("a")
 				  .collect(Collectors.toCollection(HashSet::new)));
 
@@ -46,7 +48,7 @@ public class TagControllerTest {
 		
 	
 		// second push
-		UserTagRequest request2 = buildRequest("a", LocalDateTime.now().minusHours(1), ActionEnum.ADD);
+		UserTagRequest request2 = buildRequest("1", "a", LocalDateTime.now().minusHours(1), ActionEnum.ADD);
 		UserTagResponse expected2 = new UserTagResponse("1", Stream.of("a")
 				  .collect(Collectors.toCollection(HashSet::new)));
 
@@ -58,7 +60,7 @@ public class TagControllerTest {
 		
 	
 		// third push
-		UserTagRequest request3 = buildRequest("a", LocalDateTime.now().minusMinutes(30), ActionEnum.REMOVE);
+		UserTagRequest request3 = buildRequest("1", "a", LocalDateTime.now().minusMinutes(30), ActionEnum.REMOVE);
 		UserTagResponse expected3 = new UserTagResponse("1", Stream.of("a")
 				  .collect(Collectors.toCollection(HashSet::new)));
 
@@ -77,7 +79,7 @@ public class TagControllerTest {
 	@Test
 	public void test_latent_add_received_after_remove() throws Exception{
 		
-		UserTagRequest request = buildRequest("a", LocalDateTime.now(), ActionEnum.REMOVE);
+		UserTagRequest request = buildRequest("1", "a", LocalDateTime.now(), ActionEnum.REMOVE);
 		UserTagResponse expected = new UserTagResponse("1", new HashSet<String>());
 
 		ResponseEntity<UserTagResponse> response = testRestTemplate.
@@ -88,7 +90,7 @@ public class TagControllerTest {
 		
 	
 		// second push
-		UserTagRequest request2 = buildRequest("a", LocalDateTime.now().minusHours(1), ActionEnum.ADD);
+		UserTagRequest request2 = buildRequest("1", "a", LocalDateTime.now().minusHours(1), ActionEnum.ADD);
 		UserTagResponse expected2 = new UserTagResponse("1", new HashSet<String>());
 
 		ResponseEntity<UserTagResponse> response2 = testRestTemplate.
@@ -98,16 +100,36 @@ public class TagControllerTest {
 		assertThat(response2.getBody(), equalTo(expected2));
 	}
 
+	
+/*
+ * functional integration test
+ */
+	
+	@Test
+	public void should_return_user_as_my_user_and_tag_list_as_beyhive_member() throws Exception {
 
-	private UserTagRequest buildRequest(String tag, LocalDateTime timestamp, ActionEnum type) {
+		UserTagRequest request = buildRequest("my_user", "beyhive_member", LocalDateTime.now(), ActionEnum.ADD);
+		UserTagResponse expected = new UserTagResponse("my_user", Stream.of("beyhive_member")
+				  .collect(Collectors.toCollection(HashSet::new)));
+
+		ResponseEntity<UserTagResponse> response = testRestTemplate.
+				postForEntity("http://localhost:1917/api/tags", request, UserTagResponse.class);
+		
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		assertThat(response.getBody(), equalTo(expected));
+}
+
+
+	private UserTagRequest buildRequest(String user, String tag, LocalDateTime timestamp, ActionEnum type) {
 		Set<String> tags = Stream.of(tag)
 		  .collect(Collectors.toCollection(HashSet::new));
 		switch (type) {
 			case ADD:
-				return new UserTagRequest("1", tags, null, timestamp);
+				return new UserTagRequest(user, tags, null, timestamp);
 			case REMOVE:
-				return new UserTagRequest("1", null, tags, timestamp);
+				return new UserTagRequest(user, null, tags, timestamp);
 		}
 		return null;
 	}
+	
 }
