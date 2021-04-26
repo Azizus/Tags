@@ -1,8 +1,11 @@
 package com.airship.tags.serviceImpl;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,19 +36,21 @@ public class UserTagServiceImpl implements UserTagService {
 
 		userTagRequest = this.cleanAddAndRemoveTags(userTagRequest);
 
-		for (String add : userTagRequest.getAdd()) {
+		for (String tagToAdd : userTagRequest.getAdd()) {
 			UserTagEntity userTagEntity = new UserTagEntity();
-			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity(userTagRequest, add, ActionEnum.ADD);
+			// pass only userid and timestamp
+			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity(userTagRequest, tagToAdd, ActionEnum.ADD);
 			userTagRepository.save(userTagEntity);
 		}
 
-		for (String remove : userTagRequest.getRemove()) {
+		for (String tagToRemove : userTagRequest.getRemove()) {
 			UserTagEntity userTagEntity = new UserTagEntity();
-			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity(userTagRequest, remove, ActionEnum.REMOVE);
+			userTagEntity = userTagRestMapper.UserTagRequestToUserTagEntity(userTagRequest, tagToRemove,
+					ActionEnum.REMOVE);
 			userTagRepository.save(userTagEntity);
 		}
 
-		return this.findAllUserTags(userTagRequest.getUser());
+		return this.findMostRecentUserTags(userTagRequest.getUser());
 	}
 
 	private UserTagRequest cleanAddAndRemoveTags(UserTagRequest userTagRequest) {
@@ -61,8 +66,26 @@ public class UserTagServiceImpl implements UserTagService {
 	}
 
 	@Override
-	public UserTagResponse findAllUserTags(String userId) {
-		return new UserTagResponse();
+	public Set<UserTagEntity> findAllUserTagEntitiesByUserId(String userId) {
+		return userTagRepository.getByUserId(userId);
 	}
 
+	private UserTagResponse findMostRecentUserTags(String userId) {
+
+		Set<UserTagEntity> userTagEntities = this.findAllUserTagEntitiesByUserId(userId);
+
+		Set<String> tags = userTagEntities.stream().collect(Collectors.groupingBy(UserTagEntity::getTag)).values()
+				.stream().map(e -> keepLatestAction(e)).filter(e -> e != null && ActionEnum.ADD == e.getAction())
+				.map(e -> e.getTag()).collect(Collectors.toSet());
+
+		return new UserTagResponse(userId, tags);
+	}
+
+	private UserTagEntity keepLatestAction(List<UserTagEntity> actions) {
+
+		return actions.stream()
+				.max(Comparator.comparing(UserTagEntity::getTimestamp).thenComparingInt(e -> e.getAction().getWeight()))
+				.orElse(null);
+
+	}
 }

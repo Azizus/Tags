@@ -2,7 +2,6 @@ package com.airship.tags.rest.controller;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,7 +24,7 @@ public class TagControllerTest {
 
 		Set<String> add = new HashSet<>();
 		Set<String> remove = new HashSet<>();
-		UserTagRequest tagRequest = new UserTagRequest("1", add, remove, LocalDateTime.now());
+		UserTagRequest tagRequest = new UserTagRequest("1", add, remove, "2018-08-10T06:49:04.360Z");
 
 		assertNotNull(testRestTemplate.postForObject("http://localhost:1917/api/tags", tagRequest, UserTagRequest.class));
 	}
