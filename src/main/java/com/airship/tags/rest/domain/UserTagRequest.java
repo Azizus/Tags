@@ -20,6 +20,7 @@ public class UserTagRequest {
 	private String user;
 	private Set<String> add;
 	private Set<String> remove;
+	@NotNull
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime timestamp;
 }

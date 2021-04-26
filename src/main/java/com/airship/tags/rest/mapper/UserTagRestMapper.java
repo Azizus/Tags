@@ -8,8 +8,8 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import com.airship.tags.domain.UserTagEntity;
-import com.airship.tags.domain.nonpersistant.Action;
-import com.airship.tags.domain.nonpersistant.Tag;
+import com.airship.tags.domain.data.Action;
+import com.airship.tags.domain.data.Tag;
 import com.airship.tags.rest.domain.UserTagRequest;
 import com.airship.tags.rest.domain.UserTagResponse;
 import com.airship.tags.utils.ActionEnum;
@@ -17,17 +17,17 @@ import com.airship.tags.utils.ActionEnum;
 @Component
 public class UserTagRestMapper {
 
-	public UserTagResponse TagEntityToTagResponse(UserTagEntity tagEntity) {
+	public UserTagResponse UserTagEntityToUserTagResponse(UserTagEntity tagEntity) {
 		return new UserTagResponse(tagEntity.getUserId(), tagEntity.getTags());
 	}
 
-	public UserTagEntity TagRequestToTagEntity(UserTagRequest userTagRequest) {
+	public UserTagEntity UserTagRequestToUserTagEntity(UserTagRequest userTagRequest) {
 		UserTagEntity tagEntity = new UserTagEntity();
 
 		Set<Tag> tags = new HashSet<>();
 
-		tags.addAll(this.createAddListOfTagFromTagRequest(userTagRequest));
-		tags.addAll(this.createRemoveListOfTagFromTagRequest(userTagRequest));
+		tags.addAll(this.createAddListOfTagFromUserTagRequest(userTagRequest));
+		tags.addAll(this.createRemoveListOfTagFromUserTagRequest(userTagRequest));
 
 		tagEntity.setUserId(userTagRequest.getUser());
 		tagEntity.setTags(tags);
@@ -36,39 +36,39 @@ public class UserTagRestMapper {
 
 	}
 
-	public List<Action> createListOfActionFromTagRequest(UserTagRequest userTagRequest) {
+	public List<Action> createListOfActionFromUserTagRequest(UserTagRequest userTagRequest) {
 		Action action = new Action();
 		List<Action> actions = new ArrayList<>();
 
 		action.setTimestamp(userTagRequest.getTimestamp());
-		action.setAction(ActionEnum.ADD.toString());
+		action.setAction(ActionEnum.ADD);
 		actions.add(action);
 
 		return actions;
 
 	}
 
-	public Set<Tag> createAddListOfTagFromTagRequest(UserTagRequest userTagRequest) {
+	public Set<Tag> createAddListOfTagFromUserTagRequest(UserTagRequest userTagRequest) {
 
 		Set<Tag> tagToAddList = new HashSet<>();
 		for (String add : userTagRequest.getAdd()) {
 			Tag tag = new Tag();
 
 			tag.setTag(add);
-			tag.setActions(this.createListOfActionFromTagRequest(userTagRequest));
+			tag.setActions(this.createListOfActionFromUserTagRequest(userTagRequest));
 			tagToAddList.add(tag);
 		}
 		return tagToAddList;
 	}
 
-	public Set<Tag> createRemoveListOfTagFromTagRequest(UserTagRequest userTagRequest) {
+	public Set<Tag> createRemoveListOfTagFromUserTagRequest(UserTagRequest userTagRequest) {
 
 		Set<Tag> tagToRemoveList = new HashSet<>();
 		for (String remove : userTagRequest.getAdd()) {
 			Tag tag = new Tag();
 
 			tag.setTag(remove);
-			tag.setActions(this.createListOfActionFromTagRequest(userTagRequest));
+			tag.setActions(this.createListOfActionFromUserTagRequest(userTagRequest));
 			tagToRemoveList.add(tag);
 		}
 		return tagToRemoveList;

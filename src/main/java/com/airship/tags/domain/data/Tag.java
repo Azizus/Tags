@@ -1,4 +1,4 @@
-package com.airship.tags.domain.nonpersistant;
+package com.airship.tags.domain.data;
 
 import java.util.List;
 

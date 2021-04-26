@@ -10,16 +10,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class CleanDuplication {
 	
-	public Map<String, Set<String>> cleanSetsDuplication (Set<String> firstList, Set<String> secondList){
+	public Map<String, Set<String>> cleanSetsDuplication (Set<String> add, Set<String> remove){
 		
-		HashSet<String> intermerdiate = new HashSet<String>(secondList);
-		intermerdiate.retainAll(firstList);
-		secondList.removeAll(intermerdiate);
-		firstList.removeAll(intermerdiate);
+		HashSet<String> intermerdiate = new HashSet<String>(remove);
+		intermerdiate.retainAll(add);
+		remove.removeAll(intermerdiate);
+		add.removeAll(intermerdiate);
 		
 		HashMap<String, Set<String>> cleaned = new HashMap<String, Set<String>>();
-		cleaned.put("first", firstList);
-		cleaned.put("second", secondList);
+		cleaned.put("add", add);
+		cleaned.put("remove", remove);
 		return cleaned;
 	}
 

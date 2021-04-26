@@ -1,6 +1,8 @@
-package com.airship.tags.domain.nonpersistant;
+package com.airship.tags.domain.data;
 
 import java.time.LocalDateTime;
+
+import com.airship.tags.utils.ActionEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class Action {
 
 	private LocalDateTime timestamp;
-	private String action ;
+	private ActionEnum action ;
 }

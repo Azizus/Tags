@@ -22,10 +22,10 @@ public class TagController {
 	private UserTagService tagService;
 	
 	@PostMapping(consumes = "application/json", produces = "application/json")
-    @Operation(method = "POST", summary = "Push Tag", description = "Push tag with specific informations")
-	public UserTagResponse push(@Valid @RequestBody UserTagRequest tagRequest) {
+    @Operation(method = "POST", summary = "Push Tag", description = "Push user tag")
+	public UserTagResponse push(@Valid @RequestBody UserTagRequest userTagRequest) {
 		
-		return tagService.pushTag(tagRequest);
+		return tagService.pushTag(userTagRequest);
 	}
 	
 }

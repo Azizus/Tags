@@ -2,7 +2,7 @@ package com.airship.tags.domain;
 
 import java.util.Set;
 
-import com.airship.tags.domain.nonpersistant.Tag;
+import com.airship.tags.domain.data.Tag;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

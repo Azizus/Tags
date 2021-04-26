@@ -21,7 +21,7 @@ public class TagControllerTest {
 	private TestRestTemplate testRestTemplate;
 
 	@Test
-	public void request_response_should_not_be_null_when_pushing_a_tag() throws Exception {
+	public void request_response_should_not_be_null_when_posting_a_user_tag() throws Exception {
 
 		Set<String> add = new HashSet<>();
 		Set<String> remove = new HashSet<>();
@@ -30,4 +30,13 @@ public class TagControllerTest {
 		assertNotNull(testRestTemplate.postForObject("http://localhost:1917/api/tags", tagRequest, UserTagRequest.class));
 	}
 
+//	@Test
+//	public void request_response_should_return_user_id_and_user_tags_when_posting_a_user_tag() throws Exception {
+//
+//		Set<String> add = new HashSet<>();
+//		Set<String> remove = new HashSet<>();
+//		UserTagRequest tagRequest = new UserTagRequest("1", add, remove, LocalDateTime.now());
+//
+//		assertNotNull(testRestTemplate.postForObject("http://localhost:1917/api/tags", tagRequest, UserTagRequest.class));
+//	}
 }
