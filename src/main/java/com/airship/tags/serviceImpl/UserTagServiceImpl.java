@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.airship.tags.domain.UserTagEntity;
@@ -17,17 +18,15 @@ import com.airship.tags.rest.mapper.UserTagRestMapper;
 import com.airship.tags.service.UserTagService;
 import com.airship.tags.utils.ActionEnum;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 @Service
 public class UserTagServiceImpl implements UserTagService {
 
 
-	private final UserTagRepository userTagRepository;
+	@Autowired
+	private  UserTagRepository userTagRepository;
 
-	
-	private final UserTagRestMapper userTagRestMapper;
+	@Autowired
+	private  UserTagRestMapper userTagRestMapper;
 
 	@Override
 	public UserTagResponse pushTag(UserTagRequest userTagRequest) {
@@ -57,7 +56,7 @@ public class UserTagServiceImpl implements UserTagService {
 		return userTagRepository.getByUserId(userId);
 	}
 
-	private UserTagResponse findMostRecentUserTags(String userId) {
+	protected UserTagResponse findMostRecentUserTags(String userId) {
 
 		Set<UserTagEntity> userTagEntities = this.findAllUserTagEntitiesByUserId(userId);
 
