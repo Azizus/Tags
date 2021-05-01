@@ -1,7 +1,7 @@
 Tag Tracking Server Java Project
 ================================
 
-At Airship one of our core systems allows customers to tag their customers with bits of metadata. For instance, they might tag all their users who love Beyoncé with the metadata  `beyhive_member`. They then use that metadata to select an audience for pushes or other communications they send out, such as to announce a newly scheduled show.
+The core systems allows customers to tag their customers with bits of metadata. For instance, they might tag all their users who love Beyoncé with the metadata  `beyhive_member`. They then use that metadata to select an audience for pushes or other communications they send out, such as to announce a newly scheduled show.
 
 We'd like you to implement a very stripped down version of that service. It doesn't need to persist its state anywhere or provide more than a single combined add/remove/get call.
 
