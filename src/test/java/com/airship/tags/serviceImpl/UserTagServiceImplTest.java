@@ -12,12 +12,9 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.airship.tags.repository.UserTagRepository;
 import com.airship.tags.rest.domain.UserTagRequest;
 import com.airship.tags.rest.domain.UserTagResponse;
-import com.airship.tags.rest.mapper.UserTagRestMapper;
 import com.airship.tags.utils.ActionEnum;
 
 @SpringBootTest
@@ -25,12 +22,6 @@ public class UserTagServiceImplTest {
 
 	@Autowired
 	private UserTagServiceImpl userTagServiceImpl;
-
-	@Autowired
-	private UserTagRestMapper userTagRestMapper;
-
-	@Autowired
-	private UserTagRepository userTagRepository;
 
 	@Test
 	public void should_return_reponse_when_push_user_tag() {
