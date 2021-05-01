@@ -22,30 +22,29 @@ import com.airship.tags.utils.ActionEnum;
 
 @SpringBootTest
 public class UserTagServiceImplTest {
-	
+
 	@Autowired
 	private UserTagServiceImpl userTagServiceImpl;
-	
+
 	@Autowired
 	private UserTagRestMapper userTagRestMapper;
-	
+
 	@Autowired
 	private UserTagRepository userTagRepository;
 
-	
 	@Test
 	public void should_return_reponse_when_push_user_tag() {
-		
+
 		UserTagRequest request = buildRequest("1", "a", LocalDateTime.now(), ActionEnum.ADD);
 
 		UserTagResponse actual = userTagServiceImpl.pushTag(request);
-		UserTagResponse expected = new UserTagResponse("1", Stream.of("a").collect(Collectors.toCollection(HashSet::new)));
-	
+		UserTagResponse expected = new UserTagResponse("1",
+				Stream.of("a").collect(Collectors.toCollection(HashSet::new)));
+
 		assertThat(actual, equalTo(expected));
 
 	}
 
-	
 	private UserTagRequest buildRequest(String user, String tag, LocalDateTime timestamp, ActionEnum type) {
 		Set<String> tags = Stream.of(tag).collect(Collectors.toCollection(HashSet::new));
 		switch (type) {
