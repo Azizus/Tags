@@ -85,3 +85,20 @@ And get back
 ```
 {"user":"my_user","tags":["beyhive_member"]}
 ```
+
+
+## Usage
+
+### Build
+
+```Bash
+mvn clean package
+```
+
+### Run
+
+Navigate to the desired module: DEX REST APP (which contains the web module)
+
+```Bash
+mvn spring-boot:run
+```
